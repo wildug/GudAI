@@ -9,9 +9,9 @@ function MyNewAI::Start()
 {
   local adjacent = AITileList();
 
-  if (!AICompany.SetName("MyMeMineAI")) {
+  if (!AICompany.SetName("GudAI")) {
     local i = 2;
-    while (!AICompany.SetName("MyMeMineAI #" + i)){
+    while (!AICompany.SetName("GudAI #" + i)){
         i = i + 1;
     }
   }
@@ -102,7 +102,7 @@ function MyNewAI::Start()
     if (tile == depot){
       continue;
     }
-    if (station_id % 20 == 0){
+    if (station_id % 8 == 0){
       AIRoad.BuildDriveThroughRoadStation(tile, tile - AIMap.GetTileIndex(0, 1), AIRoad.ROADVEHTYPE_BUS, AIStation.STATION_NEW);
       AIRoad.BuildDriveThroughRoadStation(tile, tile - AIMap.GetTileIndex(1, 0), AIRoad.ROADVEHTYPE_BUS, AIStation.STATION_NEW);
       //print(AIError.GetLastErrorString());
