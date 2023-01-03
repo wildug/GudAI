@@ -1,6 +1,9 @@
 // developer 2
 // debug_level script=4
-class MyNewAI extends AIController 
+
+require("busStationManager.nut");
+
+class MyNewAI extends AIController
 {
   function Start();
 }
@@ -31,11 +34,12 @@ function MyNewAI::Start()
   print("loc: "+locBigTown)
   print("locX: "+AIMap.GetTileX(locBigTown))
   print("locY: "+AIMap.GetTileY(locBigTown))
-  // ####
+
+  BusStationManager.ManageGrid(bigTown);
 
 
   // Attempt to build a bus station on every nth road tile
-  
+
   AIRoad.SetCurrentRoadType(AIRoad.ROADTYPE_ROAD);
 
   local area = AITileList();
@@ -75,9 +79,9 @@ function MyNewAI::Start()
 			depot =  point_towards;
       AIRoad.BuildRoad(tile,depot)
       break;
-		} 
+		}
   }
-  
+
 
   local engine_list = AIEngineList(AIVehicle.VT_ROAD)
   engine_list.Valuate(AIEngine.GetCapacity);
@@ -119,9 +123,9 @@ function MyNewAI::Start()
     applyOrder(vehicle);
     AIVehicle.StartStopVehicle(vehicle);
   }
-  
 
-    
+
+
   while (true) {
     while (AIEventController.IsEventWaiting()) {
         local e = AIEventController.GetNextEvent();
@@ -148,7 +152,7 @@ function MyNewAI::Start()
 
 
 function applyOrder(vehicle_id){
-  // applies 
+  // applies
   local station_list = AIStationList(AIStation.STATION_BUS_STOP);
   while (AIOrder.RemoveOrder(vehicle_id,0)){
     continue;
@@ -166,5 +170,5 @@ function applyOrder(vehicle_id){
 }
 
 function optimize(vehicle_id){
-  
+
 }
