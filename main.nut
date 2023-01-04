@@ -3,6 +3,7 @@
 
 require("busStationManager.nut");
 require("busLineManager.nut");
+require("metaManager.nut");
 
 class MyNewAI extends AIController
 {
@@ -36,16 +37,14 @@ function MyNewAI::Start()
   print("locX: "+AIMap.GetTileX(locBigTown))
   print("locY: "+AIMap.GetTileY(locBigTown))
   local i = 1;
+  //loans money in the beginning to give it a start first
+  local int = AICompany.GetLoanInterval();
+  AICompany.SetLoanAmount(2*int + AICompany.GetLoanAmount());
   while (true){
-    this.Sleep(10);
-    BusStationManager.ManageGrid(bigTown);
-    if (i == 200){
-    BusLineManager.ManageLines(bigTown);
-    i =1;
-    }
-    i +=1;
+    MetaManager.optimizeBusNetworkIn(bigTown);
+    this.Sleep(100);
   }
-
+  // END
 
   // Attempt to build a bus station on every nth road tile
 
@@ -176,8 +175,4 @@ function applyOrder(vehicle_id){
   foreach (station, value in station_list){
     AIOrder.AppendOrder(vehicle_id, AIBaseStation.GetLocation(station), AIOrder.OF_NONE);
   }
-}
-
-function optimize(vehicle_id){
-   
 }

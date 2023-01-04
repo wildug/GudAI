@@ -24,9 +24,9 @@ function BusStationManager::ManageGrid(cityID){
     grid.Valuate(AIRoad.IsRoadStationTile);
     grid.KeepValue(0);
     grid.Valuate(AITile.GetCargoProduction, 0, 1, 1, 3);
-    foreach (tile,value in grid) {
-        AILog.Info(AIMap.GetTileX(tile) + "|" + AIMap.GetTileY(tile) + "|" + AITile.GetCargoProduction(tile, 0, 1, 1, 3));
-    }
+//    foreach (tile,value in grid) {
+//        AILog.Info(AIMap.GetTileX(tile) + "|" + AIMap.GetTileY(tile) + "|" + AITile.GetCargoProduction(tile, 0, 1, 1, 3));
+//    }
     local passengerProdCap = 5;
     local station = 0;
     local stationLoc = 0;
@@ -68,30 +68,26 @@ function BusStationManager::ManageGrid(cityID){
         local point_towards;
         foreach(tile, value in grid){
             point_towards = tile+AIMap.GetTileIndex(0, 1);
-                if (AIRoad.BuildRoadDepot(point_towards, tile)) {
+                if (AIRoad.BuildRoad(tile,point_towards) && AIRoad.BuildRoadDepot(point_towards, tile)) {
                     depot =  point_towards;
-                    AIRoad.BuildRoad(tile,depot)
                     break;
                 }
 
             point_towards = tile+AIMap.GetTileIndex(0, -1);
-                if (AIRoad.BuildRoadDepot(point_towards, tile)) {
+                if (AIRoad.BuildRoad(tile,point_towards) && AIRoad.BuildRoadDepot(point_towards, tile)) {
                     depot =  point_towards;
-                    AIRoad.BuildRoad(tile,depot)
                     break;
                 }
 
                 point_towards = tile+AIMap.GetTileIndex(1, 0);
-                if (AIRoad.BuildRoadDepot(point_towards, tile)) {
+                if (AIRoad.BuildRoad(tile,point_towards) && AIRoad.BuildRoadDepot(point_towards, tile)) {
                     depot =  point_towards;
-                    AIRoad.BuildRoad(tile,depot)
                     break;
                 }
 
                 point_towards = tile+AIMap.GetTileIndex(-1, 0);
-                if (AIRoad.BuildRoadDepot(point_towards, tile)) {
+                if (AIRoad.BuildRoad(tile,point_towards) && AIRoad.BuildRoadDepot(point_towards, tile)) {
                     depot =  point_towards;
-                    AIRoad.BuildRoad(tile,depot)
                     break;
                 }
         }
