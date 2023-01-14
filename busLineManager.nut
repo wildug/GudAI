@@ -39,9 +39,7 @@ function BusLineManager::getDepotInTown(cityID){
   local townLocation = AITown.GetLocation(cityID);
   local grid = AITileList();
   local townPopulation = AITown.GetPopulation(cityID);
-  local gridSize = (townPopulation / 150).tointeger();
-
-  grid.AddRectangle(townLocation - AIMap.GetTileIndex(gridSize,gridSize), townLocation + AIMap.GetTileIndex(gridSize,gridSize));
+  local grid = getGridAroundTown(cityID);
   grid.Valuate(AIRoad.IsRoadDepotTile);
   grid.KeepValue(1);
   grid.Valuate(AITile.GetClosestTown);
