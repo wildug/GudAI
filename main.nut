@@ -33,7 +33,7 @@ function MyNewAI::Start()
   local locBigTown = AITown.GetLocation(bigTown);
   local layout = AITown.GetRoadLayout(bigTown);
   print(layout)
-  print("loc: "+locBigTown)
+  //print("loc: "+locBigTown)
   print("locX: "+AIMap.GetTileX(locBigTown))
   print("locY: "+AIMap.GetTileY(locBigTown))
   local i = 1;
@@ -52,7 +52,7 @@ function MyNewAI::Start()
 
   local area = AITileList();
   area.AddRectangle(locBigTown - AIMap.GetTileIndex(20, 20), locBigTown + AIMap.GetTileIndex(20, 20));
-  print("Is area list empty? "+ area.IsEmpty());
+  //print("Is area list empty? "+ area.IsEmpty());
   area.Valuate(AIRoad.IsRoadTile);
   area.KeepValue(1);
 

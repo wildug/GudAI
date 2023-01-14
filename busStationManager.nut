@@ -4,13 +4,8 @@ class BusStationManager{
 function BusStationManager::ManageGrid(cityID){
     // builds Station based on Population in non overlapping fashion
     AIRoad.SetCurrentRoadType(AIRoad.ROADTYPE_ROAD);
-    local townPopulation = AITown.GetPopulation(cityID);
+    local grid = getGridAroundTown(cityID);
     local townLocation = AITown.GetLocation(cityID);
-
-    local gridSize = (townPopulation / 150).tointeger();
-    local grid = AITileList();
-    grid.AddRectangle(townLocation - AIMap.GetTileIndex(gridSize,gridSize), townLocation + AIMap.GetTileIndex(gridSize,gridSize));
-    // TODO: GRID Can be empty if it is crossing map border, fix this by checking for borders
     print("EmptyGrid"+grid.IsEmpty())
     local stationList = AIStationList(AIStation.STATION_BUS_STOP);
     foreach (station,value in stationList) {
@@ -46,18 +41,17 @@ function BusStationManager::ManageGrid(cityID){
 
 
     // build depot
-    grid = AITileList();
-    grid.AddRectangle(townLocation - AIMap.GetTileIndex(gridSize,gridSize), townLocation + AIMap.GetTileIndex(gridSize,gridSize));
+    grid = getGridAroundTown(cityID);
     grid.Valuate(AIRoad.IsRoadDepotTile);
     grid.KeepValue(1);
     grid.Valuate(AITile.GetClosestTown);
     grid.KeepValue(cityID);
     grid.Valuate(AITile.GetOwner)
     grid.KeepValue(AICompany.ResolveCompanyID(AICompany.COMPANY_SELF));
+    //do we already depots if Yes, build a new one
     if (grid.IsEmpty()){
         local depot;
-        grid = AITileList();
-        grid.AddRectangle(townLocation - AIMap.GetTileIndex(gridSize,gridSize), townLocation + AIMap.GetTileIndex(gridSize,gridSize));
+        grid = getGridAroundTown(cityID);
         grid.Valuate(AIRoad.IsRoadTile);
         grid.KeepValue(1);
         grid.Valuate(AITile.GetClosestTown);
