@@ -9,3 +9,15 @@ function getGridAroundTown(cityID){
     grid.AddRectangle(townLocation - AIMap.GetTileIndex(gridSize,gridSize), townLocation + AIMap.GetTileIndex(gridSize,gridSize));
     return grid
 }
+
+function mean(list){
+    local sum = 0;
+    foreach (id, value in list) {
+        sum += list.GetValue(id);
+    }
+    local count = list.Count()
+    if (count == 0){
+        return 0
+    }
+    return sum/ count
+}

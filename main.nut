@@ -27,6 +27,7 @@ function MyNewAI::Start()
   // returns biggest Town at begin of Game
   townlist.Valuate(AITown.GetPopulation);
   local bigTown = townlist.Begin();
+  print("Mean Town Population: "+ mean(townlist))
   print(bigTown + "");
   print(AITown.GetName(bigTown));
   print(AITown.GetPopulation(bigTown));

@@ -18,7 +18,9 @@ function BusLineManager::ManageLinesAndBuild(cityID){
   vehicles_in_depot.Sort(AIList.SORT_BY_ITEM, true);
   print("Vehicles in Depot Empty: " + vehicles_in_depot.IsEmpty())
   local vehicle = vehicles_in_depot.Begin();
-  local cost = AIVehicle.GetProfitLastYear(vehicle);
+  vehicles_in_depot.Valuate(AIVehicle.GetProfitLastYear);
+  local cost = mean(vehicles_in_depot)
+
   print("Vehicle: " + vehicle +" has cost " + cost + " Unitnumber: " + AIVehicle.GetUnitNumber(vehicle));
 
 
@@ -67,6 +69,7 @@ function BusLineManager::applySemiRandomOrder(vehicle_id, cityID, depot){
   // function also makes new orders for every other vehicle assignes to depot
   // ok this is confusing, we add the vehicle_id to the depot to remove it and then to add it again;
   // TODO this better
+  AIOrder.AppendOrder(vehicle_id, depot, AIOrder.OF_SERVICE_IF_NEEDED);
   local vehicles_in_depot = AIVehicleList_Depot(depot);
   // applies Semi Random Ordering of all stations in cityID and in depot
   local station_list = AIStationList(AIStation.STATION_BUS_STOP);
@@ -76,13 +79,12 @@ function BusLineManager::applySemiRandomOrder(vehicle_id, cityID, depot){
   if ((order_count - 1) == station_list.Count()){
     return;
   }
-  AIOrder.AppendOrder(vehicle_id, depot, AIOrder.OF_SERVICE_IF_NEEDED);
 
   foreach(vehicle_id, value in vehicles_in_depot){
     while (AIOrder.RemoveOrder(vehicle_id,0)){
       continue;
     }
-  //    station_list.Sort(AIList.SORT_BY_ITEM, true);
+    //    station_list.Sort(AIList.SORT_BY_ITEM, true);
     foreach (station, value in station_list){
       AIOrder.AppendOrder(vehicle_id, AIBaseStation.GetLocation(station), AIOrder.OF_NONE);
     }
@@ -92,4 +94,18 @@ function BusLineManager::applySemiRandomOrder(vehicle_id, cityID, depot){
   }
   AIOrder.AppendOrder(vehicle_id, depot, AIOrder.OF_SERVICE_IF_NEEDED);
   }
+}
+
+function BusLineManager::applyOrderToCrowded(vehicle_id, cityID, depot){
+
+    AIOrder.AppendOrder(vehicle_id, depot, AIOrder.OF_SERVICE_IF_NEEDED);
+    local vehicles_in_depot = AIVehicleList_Depot(depot);
+    local station_list = AIStationList(AIStation.STATION_BUS_STOP);
+    station_list.Valuate(AIStation.GetNearestTown);
+    station_list.KeepValue(cityID);
+    station_list.Valuate(AIStation.GetCargoWaiting, 0)
+    
+    local order_count =AIOrder.GetOrderCount(vehicle_id)
+
+    
 }
