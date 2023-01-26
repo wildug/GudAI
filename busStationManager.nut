@@ -53,6 +53,7 @@ function BusStationManager::ManageGrid(cityID){
 
 
     // build depot
+    //TODO BUG MULTIPLE DEPOTS ARE BUILT if city is crowded
     grid = getGridAroundTown(cityID);
     grid.Valuate(AIRoad.IsRoadDepotTile);
     grid.KeepValue(1);

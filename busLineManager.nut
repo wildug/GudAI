@@ -72,10 +72,21 @@ function BusLineManager::usedEngine(){
   return engine_list.Begin();
 }
 
-function BusLineManager::getFirstVehicle(){
-  local vehicles_in_depot = AIVehicleList_Depot(depot);
+// TODO Improve SELLER, TAkes too long
+// Endless cycle in lategame
+function BusLineManager::deleteObsolete(cityID){
+  local depot = BusLineManager.getDepotInTown(cityID);
+  local bus_list = AIVehicleList_Depot(depot)
+  foreach(bus, value in bus_list){
+    if (AIVehicle.GetAgeLeft(bus)< 0 || AIVehicle.GetProfitLastYear(bus)< -300){
+      AIVehicle.SendVehicleToDepot(bus);
+      print("Sold Vehicle")
+      while(!AIVehicle.SellVehicle(bus)){
+        continue
+      }
+    }
+  }
 }
-
 
 
 function BusLineManager::applySemiRandomOrder(vehicle_id, cityID, depot){
