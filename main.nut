@@ -1,5 +1,6 @@
 // developer 2
 // debug_level script=4
+//fix VSCode
 
 require("busStationManager.nut");
 require("busLineManager.nut");
