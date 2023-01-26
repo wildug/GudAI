@@ -6,7 +6,6 @@ function BusStationManager::ManageGrid(cityID){
     AIRoad.SetCurrentRoadType(AIRoad.ROADTYPE_ROAD);
     local grid = getGridAroundTown(cityID);
     local townLocation = AITown.GetLocation(cityID);
-    print("EmptyGrid"+grid.IsEmpty())
     local stationList = AIStationList(AIStation.STATION_BUS_STOP);
     foreach (station,value in stationList) {
         local loc = AIBaseStation.GetLocation(station);
@@ -25,16 +24,29 @@ function BusStationManager::ManageGrid(cityID){
     local passengerProdCap = 5;
     local station = 0;
     local stationLoc = 0;
+    local depot = BusLineManager.getDepotInTown(cityID)
     while(AITile.GetCargoProduction(grid.Begin(),0,1,1,3) > passengerProdCap){
-        print("DEBUG :" + AITile.GetCargoProduction(grid.Begin(),0,1,1,3))
-      stationLoc = grid.Begin();   
-      print("Precond: "+AIMap.IsValidTile(stationLoc))
+      stationLoc = grid.Begin();
       if (AIRoad.BuildDriveThroughRoadStation(stationLoc, stationLoc - AIMap.GetTileIndex(0, 1), AIRoad.ROADVEHTYPE_BUS, AIStation.STATION_NEW) ||
       AIRoad.BuildDriveThroughRoadStation(stationLoc, stationLoc - AIMap.GetTileIndex(1, 0), AIRoad.ROADVEHTYPE_BUS, AIStation.STATION_NEW)){
-        print("Here")
+        print("Build station")
         grid.RemoveRectangle(stationLoc - AIMap.GetTileIndex(3,3), stationLoc + AIMap.GetTileIndex(3,3));
+
+        local engine_list = AIEngineList(AIVehicle.VT_ROAD)
+        engine_list.Valuate(AIEngine.GetCapacity);
+        engine_list.KeepTop(2);
+
+        local engine = engine_list.Begin();
+
+        local vehicle = AIVehicle.BuildVehicle(depot,engine);
+        print("vEhIcLe:"+ vehicle)
+
+        print("Random Order, built vehicle because station was constructed, Vehicle:  "+ AIVehicle.GetName(vehicle)+ " in depot: ")
+
+        BusLineManager.applySemiRandomOrder(vehicle, cityID, depot);
+        AIVehicle.StartStopVehicle(vehicle);
+
       } else{
-        print("There")
         grid.RemoveTop(1);
       }
     }

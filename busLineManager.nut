@@ -5,7 +5,7 @@ class BusLineManager{
 }
 
 function BusLineManager::ManageLinesAndBuild(cityID){
-  // builds bus in first depot in town cityID 
+  // builds bus in first depot in town cityID
   local depot = BusLineManager.getDepotInTown(cityID);
 
   local engine_list = AIEngineList(AIVehicle.VT_ROAD)
@@ -16,24 +16,37 @@ function BusLineManager::ManageLinesAndBuild(cityID){
 
   local vehicles_in_depot = AIVehicleList_Depot(depot);
   vehicles_in_depot.Sort(AIList.SORT_BY_ITEM, true);
-  print("Vehicles in Depot Empty: " + vehicles_in_depot.IsEmpty())
+//  print("Vehicles in Depot Empty: " + vehicles_in_depot.IsEmpty())
   local vehicle = vehicles_in_depot.Begin();
   vehicles_in_depot.Valuate(AIVehicle.GetProfitLastYear);
-  local cost = mean(vehicles_in_depot)
 
-  print("Vehicle: " + vehicle +" has cost " + cost + " Unitnumber: " + AIVehicle.GetUnitNumber(vehicle));
 
 
   // recycling variable vehicle
   local initialBusses = 5;
   local minimalLastYearProfit = 1000;
-  if (cost > minimalLastYearProfit ||  vehicles_in_depot.Count()< initialBusses){
+  local cost = mean(vehicles_in_depot)
+
+  //if (cost > minimalLastYearProfit ||  vehicles_in_depot.Count()< initialBusses){
+  if (vehicles_in_depot.Count()< initialBusses){
     vehicle = AIVehicle.BuildVehicle(depot,engine);
+    print("Random Order, built vehicle "+ AIVehicle.GetName(vehicle)+ " in depot: ")
     BusLineManager.applySemiRandomOrder(vehicle, cityID, depot);
     AIVehicle.StartStopVehicle(vehicle);
   }
-  else{
-    BusLineManager.applySemiRandomOrder(vehicle, cityID, depot);
+
+  local station_list = AIStationList(AIStation.STATION_BUS_STOP);
+  station_list.Valuate(AIStation.GetNearestTown);
+  station_list.KeepValue(cityID);
+  station_list.Valuate(AIStation.GetCargoWaiting, 0)
+
+  //local whenToBuildCrowdedBus = AITown.GetPopulation(cityID) / 20;
+  local whenToBuildCrowdedBus = 60
+  if (AIStation.GetCargoWaiting(station_list.Begin(),0)> whenToBuildCrowdedBus){
+    vehicle = AIVehicle.BuildVehicle(depot,engine);
+    print("Crowded Order, built vehicle "+ AIVehicle.GetName(vehicle)+ " in depot: ")
+    BusLineManager.applyOrderToCrowded(vehicle, cityID, depot);
+    AIVehicle.StartStopVehicle(vehicle);
   }
 }
 
@@ -75,23 +88,15 @@ function BusLineManager::applySemiRandomOrder(vehicle_id, cityID, depot){
   local station_list = AIStationList(AIStation.STATION_BUS_STOP);
   station_list.Valuate(AIStation.GetNearestTown);
   station_list.KeepValue(cityID);
-  local order_count =AIOrder.GetOrderCount(vehicle_id)
-  if ((order_count - 1) == station_list.Count()){
-    return;
-  }
+  local station_list_count = station_list.Count()
 
-  foreach(vehicle_id, value in vehicles_in_depot){
-    while (AIOrder.RemoveOrder(vehicle_id,0)){
-      continue;
-    }
-    //    station_list.Sort(AIList.SORT_BY_ITEM, true);
-    foreach (station, value in station_list){
-      AIOrder.AppendOrder(vehicle_id, AIBaseStation.GetLocation(station), AIOrder.OF_NONE);
-    }
-    order_count =AIOrder.GetOrderCount(vehicle_id)
-    for (local i=1; i<order_count; i+=1){
-      AIOrder.MoveOrder(vehicle_id, 0, AIBase.RandRange(order_count));
+  //    station_list.Sort(AIList.SORT_BY_ITEM, true);
+  foreach (station, value in station_list){
+    AIOrder.AppendOrder(vehicle_id, AIBaseStation.GetLocation(station), AIOrder.OF_NONE);
   }
+  for (local i=1; i<2*station_list_count; i+=1){
+    AIOrder.MoveOrder(vehicle_id, 0, AIBase.RandRange(station_list_count));
+
   AIOrder.AppendOrder(vehicle_id, depot, AIOrder.OF_SERVICE_IF_NEEDED);
   }
 }
@@ -104,8 +109,17 @@ function BusLineManager::applyOrderToCrowded(vehicle_id, cityID, depot){
     station_list.Valuate(AIStation.GetNearestTown);
     station_list.KeepValue(cityID);
     station_list.Valuate(AIStation.GetCargoWaiting, 0)
-    
-    local order_count =AIOrder.GetOrderCount(vehicle_id)
+    local minStationWaiting = mean(station_list)
 
-    
+    station_list.RemoveBelowValue(minStationWaiting)
+    local station_list_count = station_list.Count()
+
+    foreach (station, value in station_list){
+      AIOrder.AppendOrder(vehicle_id, AIBaseStation.GetLocation(station), AIOrder.OF_NONE);
+    }
+    local order_count =AIOrder.GetOrderCount(vehicle_id)
+    for (local i=1; i<2*order_count; i+=1){
+      AIOrder.MoveOrder(vehicle_id, 0, AIBase.RandRange(order_count));
+    }
+
 }
