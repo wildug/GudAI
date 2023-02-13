@@ -1,6 +1,6 @@
 require("busStationManager.nut");
 require("busLineManager.nut");
-
+require("utils.nut")
 
 class MetaManager{
 
@@ -26,7 +26,7 @@ function MetaManager::optimizeBusNetworkIn(cityID){
     if(station_list.Begin()> 3*60){
         print("###########################")
         AICompany.SetLoanAmount(int + AICompany.GetLoanAmount());
-        vehicle = AIVehicle.BuildVehicle(depot,engine);
+        vehicle = BuildAndAssignBus(depot, engine, cityID);
         print("Took loan, crowded Order, built vehicle "+ AIVehicle.GetName(vehicle)+ " in depot: ")
         BusLineManager.applyOrderToCrowded(vehicle, cityID, depot);
         AIVehicle.StartStopVehicle(vehicle);

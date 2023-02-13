@@ -1,3 +1,5 @@
+require("utils.nut")
+
 class BusStationManager{
 }
 
@@ -38,7 +40,7 @@ function BusStationManager::ManageGrid(cityID){
 
         local engine = engine_list.Begin();
 
-        local vehicle = AIVehicle.BuildVehicle(depot,engine);
+        local vehicle = BuildAndAssignBus(depot, engine, cityID);
         print("vEhIcLe:"+ vehicle)
 
         print("Random Order, built vehicle because station was constructed, Vehicle:  "+ AIVehicle.GetName(vehicle)+ " in depot: ")

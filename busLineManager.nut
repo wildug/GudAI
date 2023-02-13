@@ -29,7 +29,7 @@ function BusLineManager::ManageLinesAndBuild(cityID){
 
   //if (cost > minimalLastYearProfit ||  vehicles_in_depot.Count()< initialBusses){
   if (vehicles_in_depot.Count()< initialBusses){
-    vehicle = AIVehicle.BuildVehicle(depot,engine);
+    vehicle = BuildAndAssignBus(depot, engine, cityID);
     print("Random Order, built vehicle "+ AIVehicle.GetName(vehicle)+ " in depot: ")
     BusLineManager.applySemiRandomOrder(vehicle, cityID, depot);
     AIVehicle.StartStopVehicle(vehicle);
@@ -43,7 +43,7 @@ function BusLineManager::ManageLinesAndBuild(cityID){
   //local whenToBuildCrowdedBus = AITown.GetPopulation(cityID) / 20;
   local whenToBuildCrowdedBus = 60
   if (AIStation.GetCargoWaiting(station_list.Begin(),0)> whenToBuildCrowdedBus){
-    vehicle = AIVehicle.BuildVehicle(depot,engine);
+    vehicle = BuildAndAssignBus(depot, engine, cityID);
     print("Crowded Order, built vehicle "+ AIVehicle.GetName(vehicle)+ " in depot: ")
     BusLineManager.applyOrderToCrowded(vehicle, cityID, depot);
     AIVehicle.StartStopVehicle(vehicle);

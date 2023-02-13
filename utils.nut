@@ -21,3 +21,18 @@ function mean(list){
     }
     return sum/ count
 }
+
+function getMainBusGroup(cityID) {
+    local cityName = AITown.GetName(cityID);
+    local groups = AIGroupList()
+    foreach (ID, value in groups) {
+        if (AIGroup.GetName(ID) == ("MainBus_"+cityName))
+        return ID
+    }
+}
+
+function BuildAndAssignBus(depotID, engineID, cityID){
+    local vehicleID = AIVehicle.BuildVehicle(depotID,engineID);
+    AIGroup.MoveVehicle(getMainBusGroup(cityID), vehicleID);
+    return vehicleID
+}
