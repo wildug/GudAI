@@ -31,6 +31,24 @@ function getMainBusGroup(cityID) {
     }
 }
 
+function getCrowdedBusGroup(cityID) {
+    local cityName = AITown.GetName(cityID);
+    local groups = AIGroupList()
+    foreach (ID, value in groups) {
+        if (AIGroup.GetName(ID) == ("CrowdedBus_"+cityName))
+        return ID
+    }
+}
+
+function getRatingBusGroup(cityID) {
+    local cityName = AITown.GetName(cityID);
+    local groups = AIGroupList()
+    foreach (ID, value in groups) {
+        if (AIGroup.GetName(ID) == ("RatingsBus_"+cityName))
+        return ID
+    }
+}
+
 function BuildAndAssignBus(depotID, engineID, cityID){
     local vehicleID = AIVehicle.BuildVehicle(depotID,engineID);
     AIGroup.MoveVehicle(getMainBusGroup(cityID), vehicleID);

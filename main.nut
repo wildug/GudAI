@@ -44,8 +44,15 @@ function MyNewAI::Start()
   local int = AICompany.GetLoanInterval();
   AICompany.SetLoanAmount(2*int + AICompany.GetLoanAmount());
 
-  local bigTownGroup = AIGroup.CreateGroup(AIVehicle.VT_ROAD, AIGroup.GROUP_INVALID);
-  AIGroup.SetName(bigTownGroup, "MainBus_"+AITown.GetName(bigTown));
+  local bigTownMainGroup = AIGroup.CreateGroup(AIVehicle.VT_ROAD, AIGroup.GROUP_INVALID);
+  AIGroup.SetName(bigTownMainGroup, "MainBus_"+AITown.GetName(bigTown));
+  AIGroup.SetPrimaryColour(bigTownMainGroup,AICompany.COLOUR_GREY);
+  local bigTownCrowdedGroup = AIGroup.CreateGroup(AIVehicle.VT_ROAD, bigTownMainGroup);
+  AIGroup.SetPrimaryColour(bigTownCrowdedGroup,AICompany.COLOUR_RED);
+  AIGroup.SetName(bigTownCrowdedGroup, "CrowdedBus_"+AITown.GetName(bigTown));
+  local bigTownRatingsGroup = AIGroup.CreateGroup(AIVehicle.VT_ROAD, bigTownMainGroup);
+  AIGroup.SetPrimaryColour(bigTownRatingsGroup,AICompany.COLOUR_YELLOW);
+  AIGroup.SetName(bigTownRatingsGroup, "RatingsBus_"+AITown.GetName(bigTown));
 
 
   print("MainBus_"+AITown.GetName(bigTown))

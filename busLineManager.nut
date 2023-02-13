@@ -38,6 +38,23 @@ function BusLineManager::ManageLinesAndBuild(cityID){
   local station_list = AIStationList(AIStation.STATION_BUS_STOP);
   station_list.Valuate(AIStation.GetNearestTown);
   station_list.KeepValue(cityID);
+  station_list.Valuate(AIStation.GetCargoRating, 0);
+  station_list.KeepAboveValue(1);
+  station_list.Sort(AIList.SORT_BY_VALUE, true);
+
+  local whenToBuildRatingsBus = 35;
+  if (AIStation.GetCargoRating(station_list.Begin(),0)< whenToBuildRatingsBus){
+    print("Jaambus: "+ AIStation.GetCargoRating(station_list.Begin(),0));
+    vehicle = BuildAndAssignBus(depot, engine, cityID);
+    print("Rating Order, built vehicle "+ AIVehicle.GetName(vehicle)+ " in depot: ")
+    BusLineManager.applyOrderToLowRatings(vehicle, cityID, depot);
+    AIVehicle.StartStopVehicle(vehicle);
+  }
+ //TODO Change Selling of Rating Vehicles, dont sell them imediatly anymore
+
+  local station_list = AIStationList(AIStation.STATION_BUS_STOP);
+  station_list.Valuate(AIStation.GetNearestTown);
+  station_list.KeepValue(cityID);
   station_list.Valuate(AIStation.GetCargoWaiting, 0)
 
   //local whenToBuildCrowdedBus = AITown.GetPopulation(cityID) / 20;
@@ -132,5 +149,30 @@ function BusLineManager::applyOrderToCrowded(vehicle_id, cityID, depot){
     for (local i=1; i<2*order_count; i+=1){
       AIOrder.MoveOrder(vehicle_id, 0, AIBase.RandRange(order_count));
     }
+
+    AIGroup.MoveVehicle(getCrowdedBusGroup(cityID), vehicle_id);
+
+}
+
+function BusLineManager::applyOrderToLowRatings(vehicle_id, cityID, depotID) {
+  AIOrder.AppendOrder(vehicle_id, depotID, AIOrder.OF_SERVICE_IF_NEEDED);
+  local station_list = AIStationList(AIStation.STATION_BUS_STOP);
+  station_list.Valuate(AIStation.GetNearestTown);
+  station_list.KeepValue(cityID);
+  station_list.Valuate(AIStation.GetCargoRating, 0);
+  local meanStationRating = mean(station_list);
+  station_list.RemoveAboveValue(meanStationRating);
+  local station_list_count = station_list.Count()
+
+  foreach (station, value in station_list){
+    AIOrder.AppendOrder(vehicle_id, AIBaseStation.GetLocation(station), AIOrder.OF_NONE);
+  }
+  local order_count =AIOrder.GetOrderCount(vehicle_id)
+  for (local i=1; i<2*order_count; i+=1){
+    AIOrder.MoveOrder(vehicle_id, 0, AIBase.RandRange(order_count));
+  }
+
+  AIGroup.MoveVehicle(getRatingBusGroup(cityID), vehicle_id);
+
 
 }
