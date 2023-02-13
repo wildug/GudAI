@@ -5,6 +5,7 @@
 require("busStationManager.nut");
 require("busLineManager.nut");
 require("metaManager.nut");
+require("utils.nut")
 
 class MyNewAI extends AIController
 {
@@ -42,6 +43,13 @@ function MyNewAI::Start()
   //loans money in the beginning to give it a start first
   local int = AICompany.GetLoanInterval();
   AICompany.SetLoanAmount(2*int + AICompany.GetLoanAmount());
+
+  local bigTownGroup = AIGroup.CreateGroup(AIVehicle.VT_ROAD, AIGroup.GROUP_INVALID);
+  AIGroup.SetName(bigTownGroup, "MainBus_"+AITown.GetName(bigTown));
+
+
+  print("MainBus_"+AITown.GetName(bigTown))
+
   while (true){
     MetaManager.optimizeBusNetworkIn(bigTown);
     this.Sleep(100);
@@ -92,7 +100,6 @@ function MyNewAI::Start()
 		}
   }
 
-
   local engine_list = AIEngineList(AIVehicle.VT_ROAD)
   engine_list.Valuate(AIEngine.GetCapacity);
   engine_list.KeepTop(2);
@@ -101,7 +108,7 @@ function MyNewAI::Start()
   print(engine);
 
 
-  local vehicle = AIVehicle.BuildVehicle(depot,engine);
+  local vehicle = BuildAndAssignBus(depot, engine, cityID);
   local station_id = 0;
   area.Valuate(AIRoad.IsRoadStationTile)
   area.KeepValue(0)
