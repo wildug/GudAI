@@ -25,7 +25,7 @@ function MetaManager::optimizeBusNetworkIn(cityID){
 
     if(station_list.Begin()> 3*60){
         print("###########################")
-        AICompany.SetLoanAmount(int + AICompany.GetLoanAmount());
+        AICompany.SetLoanAmount(int + AICompany.GetLoanAmount()); //Das ist damit man wenn man kein geld hat trotzdem noch volle stationen abarbeitet
         vehicle = BuildAndAssignBus(depot, engine, cityID);
         print("Took loan, crowded Order, built vehicle "+ AIVehicle.GetName(vehicle)+ " in depot: ")
         BusLineManager.applyOrderToCrowded(vehicle, cityID, depot);
