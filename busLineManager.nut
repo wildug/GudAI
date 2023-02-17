@@ -95,9 +95,9 @@ function BusLineManager::deleteObsolete(cityID){
   local depot = BusLineManager.getDepotInTown(cityID);
   local bus_list = AIVehicleList_Depot(depot)
   foreach(bus, value in bus_list){
-    if (AIVehicle.GetAgeLeft(bus)< 0 || AIVehicle.GetProfitLastYear(bus)< -300){
+    if (AIVehicle.GetAgeLeft(bus)< 0 || (AIVehicle.GetProfitLastYear(bus)< -300 && AIVehicle.GetAge(bus) > 2)){
       AIVehicle.SendVehicleToDepot(bus);
-      print("Sold Vehicle")
+      print("Sold Vehicle"+ AIVehicle.GetName(bus)) 
       while(!AIVehicle.SellVehicle(bus)){
         continue
       }

@@ -54,3 +54,38 @@ function BuildAndAssignBus(depotID, engineID, cityID){
     AIGroup.MoveVehicle(getMainBusGroup(cityID), vehicleID);
     return vehicleID
 }
+
+function shuffleList(list){
+    // BAD shuffling
+    local length = list.Count()
+    local shuffle_number = AIBase.RandRange(2)
+    local newlist = AIList()
+    while(!list.IsEmpty()){
+        foreach(item, value in list){
+            shuffle_number = AIBase.RandRange(2)
+            if (shuffle_number>0){
+                list.RemoveItem(item)
+                newlist.AddItem(item, value)
+            }
+        }
+    }
+    return newlist
+}
+
+function nearestNeighbourTSPSolverStations(list_of_stations){
+    local shuffeled_list = shuffleList(list_of_stations)
+    local length = shuffeled_list.Count()
+    local start = shuffeled_list.Begin()
+    local ordered_list = AIStationList(AIStation.STATION_BUS_STOP)
+    for(local i=0; i<length; i+=1){
+        print("ENTERING THE LOOP")
+        shuffeled_list.Valuate(AITile.GetDistanceManhattanToTile, start)
+        shuffeled_list.Sort(AIList.SORT_BY_VALUE, true);
+        ordered_list.AddItem(i,shuffeled_list.GetValue(shuffeled_list.Begin()))
+        shuffeled_list.RemoveItem(shuffeled_list.Begin())
+        start = shuffeled_list.Begin()
+        i +=1
+    }
+    return ordered_list
+
+}

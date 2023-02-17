@@ -25,7 +25,6 @@ function MyNewAI::Start()
   this.Sleep(20)
 
   local townlist = AITownList();
-
   // returns biggest Town at begin of Game
   townlist.Valuate(AITown.GetPopulation);
   local bigTown = townlist.Begin();
@@ -59,7 +58,8 @@ function MyNewAI::Start()
 
   while (true){
     MetaManager.optimizeBusNetworkIn(bigTown);
-    this.Sleep(100);
+    print("Called MetaManager")
+    this.Sleep(30);
   }
   // END
 
