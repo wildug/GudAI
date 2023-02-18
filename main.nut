@@ -58,8 +58,8 @@ function MyNewAI::Start()
 
   while (true){
     MetaManager.optimizeBusNetworkIn(bigTown);
-    print("Called MetaManager")
-    this.Sleep(30);
+    this.Sleep(300);
+    print("called Meta")
   }
   // END
 

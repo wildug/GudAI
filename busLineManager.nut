@@ -95,9 +95,23 @@ function BusLineManager::deleteObsolete(cityID){
   local depot = BusLineManager.getDepotInTown(cityID);
   local bus_list = AIVehicleList_Depot(depot)
   foreach(bus, value in bus_list){
-    if (AIVehicle.GetAgeLeft(bus)< 0 || (AIVehicle.GetProfitLastYear(bus)< -300 && AIVehicle.GetAge(bus) > 2)){
+    if (AIVehicle.GetAgeLeft(bus)< 0){
       AIVehicle.SendVehicleToDepot(bus);
-      print("Sold Vehicle"+ AIVehicle.GetName(bus)) 
+      if (AIVehicle.GetProfitLastYear(bus)> 300){
+        print("Sold Vehicle because too old "+ AIVehicle.GetName(bus)) 
+        AIVehicle.CloneVehicle(vehicle)
+        print("cloned vehicle")
+      }
+      while(!AIVehicle.SellVehicle(bus)){
+        continue
+      }
+    }
+
+    continue
+
+    if (AIVehicle.GetProfitLastYear(bus)< -300 && AIVehicle.GetAge(bus) > 2){
+      AIVehicle.SendVehicleToDepot(bus);
+      print("Sold Vehicle because not worth it "+ AIVehicle.GetName(bus)) 
       while(!AIVehicle.SellVehicle(bus)){
         continue
       }
@@ -124,9 +138,8 @@ function BusLineManager::applySemiRandomOrder(vehicle_id, cityID, depot){
   }
   for (local i=1; i<2*station_list_count; i+=1){
     AIOrder.MoveOrder(vehicle_id, 0, AIBase.RandRange(station_list_count));
-
+    }
   AIOrder.AppendOrder(vehicle_id, depot, AIOrder.OF_SERVICE_IF_NEEDED);
-  }
 }
 
 function BusLineManager::applyOrderToCrowded(vehicle_id, cityID, depot){
@@ -142,13 +155,7 @@ function BusLineManager::applyOrderToCrowded(vehicle_id, cityID, depot){
     station_list.RemoveBelowValue(minStationWaiting)
     local station_list_count = station_list.Count()
 
-    foreach (station, value in station_list){
-      AIOrder.AppendOrder(vehicle_id, AIBaseStation.GetLocation(station), AIOrder.OF_NONE);
-    }
-    local order_count =AIOrder.GetOrderCount(vehicle_id)
-    for (local i=1; i<2*order_count; i+=1){
-      AIOrder.MoveOrder(vehicle_id, 0, AIBase.RandRange(order_count));
-    }
+    nearestNeighbourTSPSolverStations(vehicle_id, station_list)
 
     AIGroup.MoveVehicle(getCrowdedBusGroup(cityID), vehicle_id);
 
@@ -164,13 +171,7 @@ function BusLineManager::applyOrderToLowRatings(vehicle_id, cityID, depotID) {
   station_list.RemoveAboveValue(meanStationRating);
   local station_list_count = station_list.Count()
 
-  foreach (station, value in station_list){
-    AIOrder.AppendOrder(vehicle_id, AIBaseStation.GetLocation(station), AIOrder.OF_NONE);
-  }
-  local order_count =AIOrder.GetOrderCount(vehicle_id)
-  for (local i=1; i<2*order_count; i+=1){
-    AIOrder.MoveOrder(vehicle_id, 0, AIBase.RandRange(order_count));
-  }
+  nearestNeighbourTSPSolverStations(vehicle_id, station_list)
 
   AIGroup.MoveVehicle(getRatingBusGroup(cityID), vehicle_id);
 

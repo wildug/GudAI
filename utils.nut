@@ -55,37 +55,44 @@ function BuildAndAssignBus(depotID, engineID, cityID){
     return vehicleID
 }
 
-function shuffleList(list){
-    // BAD shuffling
-    local length = list.Count()
-    local shuffle_number = AIBase.RandRange(2)
-    local newlist = AIList()
-    while(!list.IsEmpty()){
-        foreach(item, value in list){
-            shuffle_number = AIBase.RandRange(2)
-            if (shuffle_number>0){
-                list.RemoveItem(item)
-                newlist.AddItem(item, value)
-            }
-        }
-    }
-    return newlist
-}
 
-function nearestNeighbourTSPSolverStations(list_of_stations){
-    local shuffeled_list = shuffleList(list_of_stations)
-    local length = shuffeled_list.Count()
-    local start = shuffeled_list.Begin()
-    local ordered_list = AIStationList(AIStation.STATION_BUS_STOP)
-    for(local i=0; i<length; i+=1){
-        print("ENTERING THE LOOP")
-        shuffeled_list.Valuate(AITile.GetDistanceManhattanToTile, start)
-        shuffeled_list.Sort(AIList.SORT_BY_VALUE, true);
-        ordered_list.AddItem(i,shuffeled_list.GetValue(shuffeled_list.Begin()))
-        shuffeled_list.RemoveItem(shuffeled_list.Begin())
-        start = shuffeled_list.Begin()
-        i +=1
+function nearestNeighbourTSPSolverStations(vehicle_id, list_of_stations){
+    local length = list_of_stations.Count()
+    local randomIndex = AIBase.RandRange(length+1)
+    local station  = list_of_stations.Begin()
+    local j = 1
+    for (local i=1; i<randomIndex; i+=1){
+        station = list_of_stations.Next()
     }
+    local ordered_list = AIStationList(AIStation.STATION_BUS_STOP)
+    ordered_list.AddItem(station, j)
+    j+=1
+    while (j <=length){
+        //print("ENTERING THE LOOP")
+        list_of_stations.Valuate(DistanceManhatten_circ_GetLocation, station)
+        list_of_stations.Sort(AIList.SORT_BY_VALUE, true);
+        station = list_of_stations.Begin()
+        station = list_of_stations.Next()
+        print(AIBaseStation.GetName(station))
+
+        AIOrder.AppendOrder(vehicle_id, AIBaseStation.GetLocation(station), AIOrder.OF_NONE);
+        ordered_list.AddItem(station,j)
+        list_of_stations.RemoveItem(station)
+        j +=1
+    }
+
+//    print("list in function")
+//    foreach(item, value in ordered_list){
+//        print(item)
+//        print(value)
+//        print(AIBaseStation.GetName(item))
+//    }
+//    print("list outside function")
+
     return ordered_list
 
+}
+
+function DistanceManhatten_circ_GetLocation(station1, station2){
+    return AITile.GetDistanceManhattanToTile(AIBaseStation.GetLocation(station1),AIBaseStation.GetLocation(station2))
 }
