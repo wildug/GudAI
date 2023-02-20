@@ -77,7 +77,7 @@ function nearestNeighbourTSPSolverStations(vehicle_id, list_of_stations){
 
         AIOrder.AppendOrder(vehicle_id, AIBaseStation.GetLocation(station), AIOrder.OF_NONE);
         ordered_list.AddItem(station,j)
-        list_of_stations.RemoveItem(station)
+        list_of_stations.RemoveItem(list_of_stations.Begin())
         j +=1
     }
 
