@@ -99,7 +99,7 @@ function BusLineManager::deleteObsolete(cityID){
       AIVehicle.SendVehicleToDepot(bus);
       if (AIVehicle.GetProfitLastYear(bus)> 300){
         print("Sold Vehicle because too old "+ AIVehicle.GetName(bus)) 
-        AIVehicle.CloneVehicle(vehicle)
+        AIVehicle.CloneVehicle(depot, bus, false)
         print("cloned vehicle")
       }
       while(!AIVehicle.SellVehicle(bus)){
@@ -155,7 +155,7 @@ function BusLineManager::applyOrderToCrowded(vehicle_id, cityID, depot){
     station_list.RemoveBelowValue(minStationWaiting)
     local station_list_count = station_list.Count()
 
-    nearestNeighbourTSPSolverStations(vehicle_id, station_list)
+    BusLineManager.nearestNeighbourTSPSolverStations(vehicle_id, station_list)
 
     AIGroup.MoveVehicle(getCrowdedBusGroup(cityID), vehicle_id);
 
@@ -171,9 +171,35 @@ function BusLineManager::applyOrderToLowRatings(vehicle_id, cityID, depotID) {
   station_list.RemoveAboveValue(meanStationRating);
   local station_list_count = station_list.Count()
 
-  nearestNeighbourTSPSolverStations(vehicle_id, station_list)
+  BusLineManager.nearestNeighbourTSPSolverStations(vehicle_id, station_list)
 
   AIGroup.MoveVehicle(getRatingBusGroup(cityID), vehicle_id);
 
 
+}
+
+function BusLineManager::nearestNeighbourTSPSolverStations(vehicle_id, list_of_stations){
+    local length = list_of_stations.Count()
+    local randomIndex = AIBase.RandRange(length+1)
+    local station  = list_of_stations.Begin()
+    local j = 1
+    for (local i=1; i<randomIndex; i+=1){
+        station = list_of_stations.Next()
+    }
+    local ordered_list = AIStationList(AIStation.STATION_BUS_STOP)
+    ordered_list.AddItem(station, j)
+    j+=1
+    while (j <=length){
+        //print("ENTERING THE LOOP")
+        list_of_stations.Valuate(DistanceManhatten_circ_GetLocation, station)
+        list_of_stations.Sort(AIList.SORT_BY_VALUE, true);
+        station = list_of_stations.Begin()
+        station = list_of_stations.Next()
+        print(AIBaseStation.GetName(station))
+
+        AIOrder.AppendOrder(vehicle_id, AIBaseStation.GetLocation(station), AIOrder.OF_NONE);
+        ordered_list.AddItem(station,j)
+        list_of_stations.RemoveItem(list_of_stations.Begin())
+        j +=1
+    }
 }
