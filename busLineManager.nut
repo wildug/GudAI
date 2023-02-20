@@ -99,7 +99,8 @@ function BusLineManager::deleteObsolete(cityID){
       AIVehicle.SendVehicleToDepot(bus);
       if (AIVehicle.GetProfitLastYear(bus)> 300){
         print("Sold Vehicle because too old "+ AIVehicle.GetName(bus)) 
-        AIVehicle.CloneVehicle(depot, bus, false)
+        local newbus =  AIVehicle.CloneVehicle(depot, bus, false)
+        AIVehicle.StartStopVehicle(newbus)
         print("cloned vehicle")
       }
       while(!AIVehicle.SellVehicle(bus)){
