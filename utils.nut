@@ -56,42 +56,6 @@ function BuildAndAssignBus(depotID, engineID, cityID){
 }
 
 
-function nearestNeighbourTSPSolverStations(vehicle_id, list_of_stations){
-    local length = list_of_stations.Count()
-    local randomIndex = AIBase.RandRange(length+1)
-    local station  = list_of_stations.Begin()
-    local j = 1
-    for (local i=1; i<randomIndex; i+=1){
-        station = list_of_stations.Next()
-    }
-    local ordered_list = AIStationList(AIStation.STATION_BUS_STOP)
-    ordered_list.AddItem(station, j)
-    j+=1
-    while (j <=length){
-        //print("ENTERING THE LOOP")
-        list_of_stations.Valuate(DistanceManhatten_circ_GetLocation, station)
-        list_of_stations.Sort(AIList.SORT_BY_VALUE, true);
-        station = list_of_stations.Begin()
-        station = list_of_stations.Next()
-        print(AIBaseStation.GetName(station))
-
-        AIOrder.AppendOrder(vehicle_id, AIBaseStation.GetLocation(station), AIOrder.OF_NONE);
-        ordered_list.AddItem(station,j)
-        list_of_stations.RemoveItem(list_of_stations.Begin())
-        j +=1
-    }
-
-//    print("list in function")
-//    foreach(item, value in ordered_list){
-//        print(item)
-//        print(value)
-//        print(AIBaseStation.GetName(item))
-//    }
-//    print("list outside function")
-
-    return ordered_list
-
-}
 
 function DistanceManhatten_circ_GetLocation(station1, station2){
     return AITile.GetDistanceManhattanToTile(AIBaseStation.GetLocation(station1),AIBaseStation.GetLocation(station2))
