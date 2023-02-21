@@ -55,11 +55,37 @@ function MyNewAI::Start()
 
 
   print("MainBus_"+AITown.GetName(bigTown))
-
+  
+  local ourTownlist = AITownList()
+  ourTownlist.Clear()
+  ourTownlist.AddItem(bigTown, townlist.GetValue(bigTown))
+  local nextTown
   while (true){
-    MetaManager.optimizeBusNetworkIn(bigTown);
-    this.Sleep(300);
-    print("called Meta")
+    if (AICompany.GetQuarterlyIncome(AICompany.COMPANY_SELF, AICompany.CURRENT_QUARTER) > 2500*ourTownlist.Count()){
+
+      nextTown = townlist.Begin()
+      for(local i=1; i<=ourTownlist.Count();i+=1){
+        nextTown = townlist.Next()
+      }
+      ourTownlist.AddItem(nextTown, townlist.GetValue(nextTown))
+      print("ADDED TOWN " + AITown.GetName(nextTown))
+
+      bigTownMainGroup = AIGroup.CreateGroup(AIVehicle.VT_ROAD, AIGroup.GROUP_INVALID);
+      AIGroup.SetName(bigTownMainGroup, "MainBus_"+AITown.GetName(nextTown));
+      AIGroup.SetPrimaryColour(bigTownMainGroup,AICompany.COLOUR_GREY);
+      bigTownCrowdedGroup = AIGroup.CreateGroup(AIVehicle.VT_ROAD, bigTownMainGroup);
+      AIGroup.SetPrimaryColour(bigTownCrowdedGroup,AICompany.COLOUR_RED);
+      AIGroup.SetName(bigTownCrowdedGroup, "CrowdedBus_"+AITown.GetName(nextTown));
+      bigTownRatingsGroup = AIGroup.CreateGroup(AIVehicle.VT_ROAD, bigTownMainGroup);
+      AIGroup.SetPrimaryColour(bigTownRatingsGroup,AICompany.COLOUR_YELLOW);
+      AIGroup.SetName(bigTownRatingsGroup, "RatingsBus_"+AITown.GetName(nextTown));
+    }
+
+    foreach (town, value in ourTownlist){
+      print("called Meta for "+ AITown.GetName(town))
+      MetaManager.optimizeBusNetworkIn(town);
+      this.Sleep(100);
+    }
   }
   // END
 
