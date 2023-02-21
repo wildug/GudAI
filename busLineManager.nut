@@ -70,7 +70,6 @@ function BusLineManager::ManageLinesAndBuild(cityID){
 function BusLineManager::getDepotInTown(cityID){
   local townLocation = AITown.GetLocation(cityID);
   local grid = AITileList();
-  local townPopulation = AITown.GetPopulation(cityID);
   local grid = getGridAroundTown(cityID);
   grid.Valuate(AIRoad.IsRoadDepotTile);
   grid.KeepValue(1);

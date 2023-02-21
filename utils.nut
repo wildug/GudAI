@@ -51,6 +51,8 @@ function getRatingBusGroup(cityID) {
 
 function BuildAndAssignBus(depotID, engineID, cityID){
     local vehicleID = AIVehicle.BuildVehicle(depotID,engineID);
+    print("CItyID "+ cityID)
+    print("vehicleID"+ vehicleID)
     AIGroup.MoveVehicle(getMainBusGroup(cityID), vehicleID);
     return vehicleID
 }
