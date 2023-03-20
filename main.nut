@@ -86,6 +86,8 @@ function MyNewAI::Start()
       MetaManager.optimizeBusNetworkIn(town);
       this.Sleep(100);
     }
+
+    metaManger.metaManagerTrains()
     
   }
   // END

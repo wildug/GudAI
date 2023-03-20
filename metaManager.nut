@@ -42,7 +42,23 @@ function MetaManager::optimizeBusNetworkIn(cityID){
         }
 }
 
-function MetaManager::optimizeTrainNetwork(routeID){
+function MetaManager::metaManageTrains(){
+    local bankbalance = AICompany.GetBankBalance(AICompany.COMPANY_SELF);
+    grouplist = AIGroupList()
+    grouplist.Valuate(AIGroup.GetVehicleType)
+    grouplist.KeepValue(AIVehicle.VT_RAIL)
+    if (bankbalance > 100000){
+        trainGroup = AIGroup.CreateGroup(AIVehicle.VT_RAIL, AIGroup.GROUP_INVALID)
+        AIGroup.SetName(trainGroup, "TrainGroup"+(grouplist.Count()+1))
+    }
+    
+    foreach (groupID, value in grouplist){
+        MetaManager.optimizeTrainNetwork(groupID)
+    }
+
+}
+
+function MetaManager::optimizeTrainNetwork(groupID){
     // only calls busLineManager we have more than station cost + bus cost in bank
     local bankbalance = AICompany.GetBankBalance(AICompany.COMPANY_SELF);
     local engine = trainManager.usedEngine()
