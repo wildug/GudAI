@@ -64,12 +64,12 @@ function DistanceManhatten_circ_GetLocation(station1, station2){
 function  ID_GetLargestUntappedIndustry(id_cargoID) {
     ailist_cargoProducersList = AIIndustryList_CargoProducing(id_cargoID);
 
-    cargoProducersList.Valuate(AIIndustry.GetAmountOfStationsAround);
-    cargoProducersList.RemoveAboveValue(0);
+    ailist_cargoProducersList.Valuate(AIIndustry.GetAmountOfStationsAround);
+    ailist_cargoProducersList.RemoveAboveValue(0);
 
-    cargoProducersList.Valuate(AIIndustry.GetLastMonthProduction, cargoID);
+    ailist_cargoProducersList.Valuate(AIIndustry.GetLastMonthProduction, cargoID);
 
-    return cargoProducersList.Begin();
+    return ailist_cargoProducersList.Begin();
 }
 
 function ID_GetNearAcceptingIndustry(id_producerID, i_minDist ) {
@@ -77,10 +77,10 @@ function ID_GetNearAcceptingIndustry(id_producerID, i_minDist ) {
     tile_producerPosition = AIIndustry.GetLocation(id_producerID);
     ailist_producedCargoList = AIIndustryType.GetProducedCargo(id_producerType);
 
-    cargoAcceptorList = AIIndustryList_CargoAccepting(alist_producedCargoList.Begin()) //TODO: das hier ist bisschen heßlig und geht bei Modpacks glaub nicht wenn sachen mehr optionen haben
+    ailist_cargoAcceptorList = AIIndustryList_CargoAccepting(alist_producedCargoList.Begin()) //TODO: das hier ist bisschen heßlig und geht bei Modpacks glaub nicht wenn sachen mehr optionen haben
     
-    cargoAcceptorList.Valuate(AIIndustry.GetDistanceSquareToTile, tile_producerPosition);
-    cargoAcceptorList.RemoveBelowValue(i_minDist);
+    ailist_cargoAcceptorList.Valuate(AIIndustry.GetDistanceSquareToTile, tile_producerPosition);
+    ailist_cargoAcceptorList.RemoveBelowValue(i_minDist);
 
-    return cargoAcceptorList.Begin();
+    return ailist_cargoAcceptorList.Begin();
 }
