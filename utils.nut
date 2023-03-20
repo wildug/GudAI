@@ -51,7 +51,7 @@ function getRatingBusGroup(cityID) {
 
 function BuildAndAssignBus(depotID, engineID, cityID){
     local vehicleID = AIVehicle.BuildVehicle(depotID,engineID);
-    print("CItyID "+ cityID)
+    print("CityID "+ cityID)
     print("vehicleID"+ vehicleID)
     AIGroup.MoveVehicle(getMainBusGroup(cityID), vehicleID);
     return vehicleID
@@ -61,10 +61,26 @@ function DistanceManhatten_circ_GetLocation(station1, station2){
     return AITile.GetDistanceManhattanToTile(AIBaseStation.GetLocation(station1),AIBaseStation.GetLocation(station2))
 }
 
-function  GetLargestUntappedIndustry(cargoID) {
-    cargoProducersList = AIIndustryList_CargoProducing(cargoID);
+function  ID_GetLargestUntappedIndustry(id_cargoID) {
+    ailist_cargoProducersList = AIIndustryList_CargoProducing(id_cargoID);
+
     cargoProducersList.Valuate(AIIndustry.GetAmountOfStationsAround);
     cargoProducersList.RemoveAboveValue(0);
+
     cargoProducersList.Valuate(AIIndustry.GetLastMonthProduction, cargoID);
+
     return cargoProducersList.Begin();
+}
+
+function ID_GetNearAcceptingIndustry(id_producerID, i_minDist ) {
+    id_producerType = AIIndustry.GetIndustryType(id_producerID);
+    tile_producerPosition = AIIndustry.GetLocation(id_producerID);
+    ailist_producedCargoList = AIIndustryType.GetProducedCargo(id_producerType);
+
+    cargoAcceptorList = AIIndustryList_CargoAccepting(alist_producedCargoList.Begin()) //TODO: das hier ist bisschen heßlig und geht bei Modpacks glaub nicht wenn sachen mehr optionen haben
+    
+    cargoAcceptorList.Valuate(AIIndustry.GetDistanceSquareToTile, tile_producerPosition);
+    cargoAcceptorList.RemoveBelowValue(i_minDist);
+
+    return cargoAcceptorList.Begin();
 }
