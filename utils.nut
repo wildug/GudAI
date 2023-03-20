@@ -57,8 +57,14 @@ function BuildAndAssignBus(depotID, engineID, cityID){
     return vehicleID
 }
 
-
-
 function DistanceManhatten_circ_GetLocation(station1, station2){
     return AITile.GetDistanceManhattanToTile(AIBaseStation.GetLocation(station1),AIBaseStation.GetLocation(station2))
+}
+
+function  GetLargestUntappedIndustry(cargoID) {
+    cargoProducersList = AIIndustryList_CargoProducing(cargoID);
+    cargoProducersList.Valuate(AIIndustry.GetAmountOfStationsAround);
+    cargoProducersList.RemoveAboveValue(0);
+    cargoProducersList.Valuate(AIIndustry.GetLastMonthProduction, cargoID);
+    return cargoProducersList.Begin();
 }
