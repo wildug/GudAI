@@ -23,28 +23,25 @@ function mean(list){
 }
 
 function getMainBusGroup(cityID) {
-    local cityName = AITown.GetName(cityID);
     local groups = AIGroupList()
     foreach (ID, value in groups) {
-        if (AIGroup.GetName(ID) == ("MainBus_"+cityName))
-        return ID
+        if (AIGroup.GetName(ID) == ("MainBus_"+cityID))
+            return ID
     }
 }
 
 function getCrowdedBusGroup(cityID) {
-    local cityName = AITown.GetName(cityID);
     local groups = AIGroupList()
     foreach (ID, value in groups) {
-        if (AIGroup.GetName(ID) == ("CrowdedBus_"+cityName))
-        return ID
+        if (AIGroup.GetName(ID) == ("CrowdedBus_"+cityID))
+            return ID
     }
 }
 
 function getRatingBusGroup(cityID) {
-    local cityName = AITown.GetName(cityID);
     local groups = AIGroupList()
     foreach (ID, value in groups) {
-        if (AIGroup.GetName(ID) == ("RatingsBus_"+cityName))
+        if (AIGroup.GetName(ID) == ("RatingsBus_"+cityID))
         return ID
     }
 }
@@ -78,7 +75,7 @@ function ID_GetNearAcceptingIndustry(id_producerID, i_minDist ) {
     ailist_producedCargoList = AIIndustryType.GetProducedCargo(id_producerType);
 
     ailist_cargoAcceptorList = AIIndustryList_CargoAccepting(alist_producedCargoList.Begin()) //TODO: das hier ist bisschen heßlig und geht bei Modpacks glaub nicht wenn sachen mehr optionen haben
-    
+
     ailist_cargoAcceptorList.Valuate(AIIndustry.GetDistanceSquareToTile, tile_producerPosition);
     ailist_cargoAcceptorList.RemoveBelowValue(i_minDist);
 
