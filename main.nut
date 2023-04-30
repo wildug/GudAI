@@ -44,18 +44,18 @@ function MyNewAI::Start()
   AICompany.SetLoanAmount(2*int + AICompany.GetLoanAmount());
 
   local bigTownMainGroup = AIGroup.CreateGroup(AIVehicle.VT_ROAD, AIGroup.GROUP_INVALID);
-  AIGroup.SetName(bigTownMainGroup, "MainBus_"+AITown.GetName(bigTown));
+  AIGroup.SetName(bigTownMainGroup, "MainBus_"+bigTown);
   AIGroup.SetPrimaryColour(bigTownMainGroup,AICompany.COLOUR_GREY);
   local bigTownCrowdedGroup = AIGroup.CreateGroup(AIVehicle.VT_ROAD, bigTownMainGroup);
   AIGroup.SetPrimaryColour(bigTownCrowdedGroup,AICompany.COLOUR_RED);
-  AIGroup.SetName(bigTownCrowdedGroup, "CrowdedBus_"+AITown.GetName(bigTown));
+  AIGroup.SetName(bigTownCrowdedGroup, "CrowdedBus_"+bigTown);
   local bigTownRatingsGroup = AIGroup.CreateGroup(AIVehicle.VT_ROAD, bigTownMainGroup);
   AIGroup.SetPrimaryColour(bigTownRatingsGroup,AICompany.COLOUR_YELLOW);
-  AIGroup.SetName(bigTownRatingsGroup, "RatingsBus_"+AITown.GetName(bigTown));
+  AIGroup.SetName(bigTownRatingsGroup, "RatingsBus_"+bigTown);
 
 
   print("MainBus_"+AITown.GetName(bigTown))
-  
+
   local ourTownlist = AITownList()
   ourTownlist.Clear()
   ourTownlist.AddItem(bigTown, townlist.GetValue(bigTown))
@@ -71,14 +71,16 @@ function MyNewAI::Start()
       print("ADDED TOWN " + AITown.GetName(nextTown))
 
       bigTownMainGroup = AIGroup.CreateGroup(AIVehicle.VT_ROAD, AIGroup.GROUP_INVALID);
-      AIGroup.SetName(bigTownMainGroup, "MainBus_"+AITown.GetName(nextTown));
+      print("AAAAAAAAA: " + AIGroup.GetName(bigTownMainGroup));
+      print(AIGroup.SetName(bigTownMainGroup, "MainBus_"+nextTown));
+      print("BAAAAAAAA: " + AIGroup.GetName(bigTownMainGroup));
       AIGroup.SetPrimaryColour(bigTownMainGroup,AICompany.COLOUR_GREY);
       bigTownCrowdedGroup = AIGroup.CreateGroup(AIVehicle.VT_ROAD, bigTownMainGroup);
       AIGroup.SetPrimaryColour(bigTownCrowdedGroup,AICompany.COLOUR_RED);
-      AIGroup.SetName(bigTownCrowdedGroup, "CrowdedBus_"+AITown.GetName(nextTown));
+      AIGroup.SetName(bigTownCrowdedGroup, "CrowdedBus_"+nextTown);
       bigTownRatingsGroup = AIGroup.CreateGroup(AIVehicle.VT_ROAD, bigTownMainGroup);
       AIGroup.SetPrimaryColour(bigTownRatingsGroup,AICompany.COLOUR_YELLOW);
-      AIGroup.SetName(bigTownRatingsGroup, "RatingsBus_"+AITown.GetName(nextTown));
+      AIGroup.SetName(bigTownRatingsGroup, "RatingsBus_"+nextTown);
     }
 
     foreach (town, value in ourTownlist){
@@ -87,8 +89,8 @@ function MyNewAI::Start()
       this.Sleep(100);
     }
 
-    metaManger.metaManagerTrains()
-    
+    //metaManager.metaManagerTrains()
+
   }
   // END
 }
