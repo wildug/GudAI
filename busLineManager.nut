@@ -95,7 +95,9 @@ function BusLineManager::deleteObsolete(cityID){
   local bus_list = AIVehicleList_Depot(depot)
   foreach(bus, value in bus_list){
     if (AIVehicle.GetAgeLeft(bus)< 0){
-      AIVehicle.SendVehicleToDepot(bus);
+      if (!AIVehicle.SendVehicleToDepot(bus)){
+        return
+      }
       if (AIVehicle.GetProfitLastYear(bus)> 300){
         print("Sold Vehicle because too old "+ AIVehicle.GetName(bus)) 
         local newbus =  AIVehicle.CloneVehicle(depot, bus, false)
@@ -105,12 +107,14 @@ function BusLineManager::deleteObsolete(cityID){
       while(!AIVehicle.SellVehicle(bus)){
         continue
       }
+      return
     }
 
-    continue
 
-    if (AIVehicle.GetProfitLastYear(bus)< -300 && AIVehicle.GetAge(bus) > 2){
-      AIVehicle.SendVehicleToDepot(bus);
+    else if (AIVehicle.GetProfitLastYear(bus)< -300 && AIVehicle.GetAge(bus) > 2){
+      if (!AIVehicle.SendVehicleToDepot(bus)){
+        return
+      }
       print("Sold Vehicle because not worth it "+ AIVehicle.GetName(bus)) 
       while(!AIVehicle.SellVehicle(bus)){
         continue
