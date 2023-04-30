@@ -29,12 +29,12 @@ function MyNewAI::Start()
   townlist.Valuate(AITown.GetPopulation);
   local bigTown = townlist.Begin();
   print("Mean Town Population: "+ mean(townlist))
-  print(bigTown + "");
+  print("Name of first Town: "+bigTown);
   print(AITown.GetName(bigTown));
   print(AITown.GetPopulation(bigTown));
   local locBigTown = AITown.GetLocation(bigTown);
   local layout = AITown.GetRoadLayout(bigTown);
-  print(layout)
+
   //print("loc: "+locBigTown)
   print("locX: "+AIMap.GetTileX(locBigTown))
   print("locY: "+AIMap.GetTileY(locBigTown))
@@ -71,9 +71,7 @@ function MyNewAI::Start()
       print("ADDED TOWN " + AITown.GetName(nextTown))
 
       bigTownMainGroup = AIGroup.CreateGroup(AIVehicle.VT_ROAD, AIGroup.GROUP_INVALID);
-      print("AAAAAAAAA: " + AIGroup.GetName(bigTownMainGroup));
       print(AIGroup.SetName(bigTownMainGroup, "MainBus_"+nextTown));
-      print("BAAAAAAAA: " + AIGroup.GetName(bigTownMainGroup));
       AIGroup.SetPrimaryColour(bigTownMainGroup,AICompany.COLOUR_GREY);
       bigTownCrowdedGroup = AIGroup.CreateGroup(AIVehicle.VT_ROAD, bigTownMainGroup);
       AIGroup.SetPrimaryColour(bigTownCrowdedGroup,AICompany.COLOUR_RED);
