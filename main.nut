@@ -12,6 +12,7 @@ class MyNewAI extends AIController
   function Start();
 }
 
+
 function MyNewAI::Start()
 {
   local adjacent = AITileList();
